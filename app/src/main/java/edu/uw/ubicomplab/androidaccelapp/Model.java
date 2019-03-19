@@ -36,7 +36,7 @@ public class Model {
     private Context context;
 
     // TODO optional: give your gestures more informative names
-    public String[] outputClasses = {"Gesture1", "Gesture2", "Gesture3"};
+    public String[] outputClasses = {"G1", "G2", "G3","G4"};
 
     public Model(Context context) {
         this.context = context;
@@ -63,32 +63,46 @@ public class Model {
      * @param outputLabel: the label for the data
      * @param isTraining: whether the sample should go into the train or test set
      */
-    public void addSample(DescriptiveStatistics atime, DescriptiveStatistics ax, DescriptiveStatistics ay, DescriptiveStatistics az,
-                             DescriptiveStatistics gtime, DescriptiveStatistics gx, DescriptiveStatistics gy, DescriptiveStatistics gz,
-                             String outputLabel, boolean isTraining) {
+
+    public Double[] computeFeatures(DescriptiveStatistics atime, DescriptiveStatistics ax, DescriptiveStatistics ay, DescriptiveStatistics az,
+                                DescriptiveStatistics gtime, DescriptiveStatistics gx, DescriptiveStatistics gy, DescriptiveStatistics gz)
+    {
         Double[] data = new Double[featureNames.keySet().size()];
 
         // Compute features
         // TODO: replace these placeholders with real calculations involving ax, ay, etc.
         data[0] = 0.0;
         data[1] = 0.0;
-        data[2] = 4.0;
+        data[2] = 0.0;
+        return data;
+    }
+
+    //adds a training instance to the model
+    public void addTrainingSample(Double[] features, String outputLabel) {
+
 
         // Convert the feature vector to Strings
         String[] stringData = new String[featureNames.keySet().size()];
         for (int i=0; i<featureNames.keySet().size(); i++) {
-            stringData[i] = Double.toString(data[i]);
+            stringData[i] = Double.toString(features[i]);
         }
 
-        // Add to the list of feature samples as strings
-        if (isTraining) {
-            ArrayList<String[]> currentSamples = trainingData.get(outputLabel);
-            currentSamples.add(stringData);
-            trainingData.put(outputLabel, currentSamples);
+        // Add to the list of feature samples as strings to the training set
+        ArrayList<String[]> currentSamples = trainingData.get(outputLabel);
+        currentSamples.add(stringData);
+        trainingData.put(outputLabel, currentSamples);
+
+    }
+
+    public void assignTestSample(Double[] features)
+    {
+        //Convert the feature vector to Strings
+        String[] stringData = new String[featureNames.keySet().size()];
+        for (int i=0; i<featureNames.keySet().size(); i++) {
+            stringData[i] = Double.toString(features[i]);
         }
-        else {
-            testData = stringData;
-        }
+        //Assign the data to the test condition (We are testing only one instance at a time)
+        testData = stringData;
     }
 
     /**

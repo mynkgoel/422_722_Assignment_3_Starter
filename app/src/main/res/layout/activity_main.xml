@@ -35,6 +35,13 @@
             android:layout_weight="1"
             android:onClick="recordGesture"
             android:text="Gesture 3"/>
+        <Button
+            android:id="@+id/gesture4Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="recordGesture"
+            android:text="Gesture 4"/>
     </LinearLayout>
 
     <LinearLayout
@@ -58,6 +65,12 @@
 
         <TextView
             android:id="@+id/gesture3TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Num samples: 0"/>
+        <TextView
+            android:id="@+id/gesture4TextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
