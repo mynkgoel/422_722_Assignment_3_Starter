@@ -12,6 +12,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -24,6 +25,7 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
+import java.io.File;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -50,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private static final int MAX_DATA_POINTS_UI_IMU = 100; // Adjust to show more points on graph
     public int accelGraphXTime = 0;
     public int gyroGraphXTime = 0;
-    public boolean isPlotting = true;
+    public boolean isPlotting = false;
 
     // UI elements
     private TextView resultText;
@@ -63,6 +65,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private DescriptiveStatistics accelTime, accelX, accelY, accelZ;
     private DescriptiveStatistics gyroTime, gyroX, gyroY, gyroZ;
     private static final int GESTURE_DURATION_SECS = 2;
+
+    boolean isAnyNewGestureRecorded = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -184,6 +188,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     private void computeFeaturesAndAddSamples(boolean isTraining, String label, View v2)
     {
+        isAnyNewGestureRecorded = true;
         // Add the recent gesture to the train or test set
         isRecording = false;
 
@@ -279,18 +284,33 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
      * Trains the model as long as there is at least one sample per class
      */
     public void trainModel(View v) {
-        // Make sure there is training data for each gesture
-        for (int i=0; i<model.outputClasses.length; i++) {
-            int gestureCount = model.getNumTrainSamples(i);
-            if (gestureCount == 0) {
-                Toast.makeText(getApplicationContext(), "Need examples for gesture" + (i+1),
-                        Toast.LENGTH_SHORT).show();
-                return;
-            }
+        File SDFile = android.os.Environment.getExternalStorageDirectory();
+        String fullFileName = SDFile.getAbsolutePath() + File.separator + model.trainDataFilepath;
+        File trainingFile = new File(fullFileName);
+        if (trainingFile.exists() && !isAnyNewGestureRecorded)
+        {
+            Log.d("TAG","Training file exists: "+fullFileName);
+            model.train(false);
+
+        }
+        else
+        {
+            Log.d("TAG","Need to create training file: "+fullFileName);
+            model.train(true);
         }
 
+        // Make sure there is training data for each gesture
+//        for (int i=0; i<model.outputClasses.length; i++) {
+//            int gestureCount = model.getNumTrainSamples(i);
+//            if (gestureCount == 0) {
+//                Toast.makeText(getApplicationContext(), "Need examples for gesture" + (i+1),
+//                        Toast.LENGTH_SHORT).show();
+//                return;
+//            }
+//        }
+
         // Train
-        model.train();
+//        model.train();
     }
 
     /**
@@ -300,6 +320,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         model.resetTrainingData();
         updateTrainDataCount();
         resultText.setText("Result: ");
+        isAnyNewGestureRecorded = false;
+    }
+
+    //Deletes the training file
+    public void deleteTrainingFile (View v)
+    {
+        File SDFile = android.os.Environment.getExternalStorageDirectory();
+        String fullFileName = SDFile.getAbsolutePath() + File.separator + model.trainDataFilepath;
+        File trainingFile = new File(fullFileName);
+        trainingFile.delete();
     }
 
     /**

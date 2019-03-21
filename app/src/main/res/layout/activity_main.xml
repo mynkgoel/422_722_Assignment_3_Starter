@@ -113,6 +113,13 @@
             android:layout_weight="1"
             android:onClick="clearModel"
             android:text="Clear"/>
+        <Button
+            android:id="@+id/deleteFileButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="deleteTrainingFile"
+            android:text="Delete"/>
 
     </LinearLayout>
 

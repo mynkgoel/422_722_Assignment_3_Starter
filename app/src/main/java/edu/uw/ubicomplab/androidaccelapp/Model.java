@@ -30,7 +30,7 @@ public class Model {
     private Map<String, ArrayList<String[]>> trainingData;
     private String[] testData;
     public Map<String, String> featureNames;
-    private String trainDataFilepath = "trainData.arff";
+    public String trainDataFilepath = "trainData.arff";
     private String testDataFilepath = "testData.arff";
     private Classifier model;
     private Context context;
@@ -48,6 +48,9 @@ public class Model {
         featureNames.put("Feature1", "numeric");
         featureNames.put("Feature2", "numeric");
         featureNames.put("Feature3", "numeric");
+        featureNames.put("Feature4", "numeric");
+        featureNames.put("Feature5", "numeric");
+        featureNames.put("Feature6", "numeric");
     }
 
     /**
@@ -74,6 +77,9 @@ public class Model {
         data[0] = 0.0;
         data[1] = 0.0;
         data[2] = 0.0;
+        data[3] = 0.0;
+        data[4] = 0.0;
+        data[5] = 0.0;
         return data;
     }
 
@@ -188,9 +194,11 @@ public class Model {
     /**
      * Trains a model for the training data
      */
-    public void train() {
+    public void train(boolean isAddTrainingSamples) {
+
         // Create the file for training
-        createDataFile(true);
+        if (isAddTrainingSamples)
+            createDataFile(true);
 
         // Read the file and specify the last index as the class
         Instances trainInstances = createInstances(trainDataFilepath);
@@ -198,12 +206,16 @@ public class Model {
             return;
         }
         trainInstances.setClassIndex(trainInstances.numAttributes()-1);
+        Toast.makeText(context,
+                "Number of total training samples: "+trainInstances.size(),
+                Toast.LENGTH_SHORT).show();
 
         // Define the classifier
         // TODO optional: try out different classifiers provided by Weka
         model = new J48();
         try {
             model.buildClassifier(trainInstances);
+
         } catch (Exception e) {
             e.printStackTrace();
             return;
