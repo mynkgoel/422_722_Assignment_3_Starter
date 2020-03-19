@@ -36,7 +36,7 @@ public class Model {
     private Context context;
 
     // TODO optional: give your gestures more informative names
-    public String[] outputClasses = {"G1", "G2", "G3","G4"};
+    public String[] outputClasses = {"Up/Down", "Left/Right", "Fwd/Back","Static"};
 
     public Model(Context context) {
         this.context = context;
@@ -59,7 +59,7 @@ public class Model {
      * @param ax: the x-acceleration data
      * @param ay: the y-acceleration data
      * @param az: the z-acceleration data
-     * @param gtime: the time for the accelerometer data
+     * @param gtime: the time for the gyroscope data
      * @param gx: the x-gyroscope data
      * @param gy: the y-gyroscope data
      * @param gz: the z-gyroscope data
