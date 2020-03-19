@@ -74,6 +74,7 @@ public class Model {
 
         // Compute features
         // TODO: replace these placeholders with real calculations involving ax, ay, etc.
+        // e.g., ax.getVariance(), ay.getMean(), etc.
         data[0] = 0.0;
         data[1] = 0.0;
         data[2] = 0.0;

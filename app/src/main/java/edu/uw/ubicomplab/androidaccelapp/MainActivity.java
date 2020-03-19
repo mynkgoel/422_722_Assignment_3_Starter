@@ -155,6 +155,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 accelZ.addValue(az);
             }
         }
+
         else if (sensor.getType() == Sensor.TYPE_GYROSCOPE) {
             gyroGraphXTime += 1;
 
@@ -192,7 +193,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         // Add the recent gesture to the train or test set
         isRecording = false;
 
-        //TODO: Replace this function to receive features from Particle
         Double[] features = model.computeFeatures(accelTime, accelX, accelY, accelZ,
                 gyroTime, gyroX, gyroY, gyroZ);
 
@@ -243,7 +243,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 break;
         }
 
-        //TODO: When you stop using Android sensors, you might want to remove the timers and directly add features from Particle to the set
         // Create the timer to start data collection from the Android sensors
         Timer startTimer = new Timer();
         TimerTask startTask = new TimerTask() {
@@ -299,15 +298,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             model.train(true);
         }
 
-        // Make sure there is training data for each gesture
-//        for (int i=0; i<model.outputClasses.length; i++) {
-//            int gestureCount = model.getNumTrainSamples(i);
-//            if (gestureCount == 0) {
-//                Toast.makeText(getApplicationContext(), "Need examples for gesture" + (i+1),
-//                        Toast.LENGTH_SHORT).show();
-//                return;
-//            }
-//        }
+         //Make sure there is training data for each gesture
+        for (int i=0; i<model.outputClasses.length; i++) {
+            int gestureCount = model.getNumTrainSamples(i);
+            if (gestureCount == 0) {
+                Toast.makeText(getApplicationContext(), "Need examples for gesture" + (i+1),
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
 
         // Train
 //        model.train();
